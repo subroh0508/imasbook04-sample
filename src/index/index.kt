@@ -1,9 +1,13 @@
 package index
 
 import org.w3c.dom.HTMLInputElement
+import org.w3c.dom.Node
+import org.w3c.dom.events.Event
 import org.w3c.dom.get
 import kotlin.browser.document
 
+val resetButton: Node?
+    get() = document.getElementsByName("reset")[0]
 val producer: HTMLInputElement?
     get() = document.getElementsByName("producer")[0] as? HTMLInputElement
 val ritsuko: HTMLInputElement?
@@ -23,6 +27,10 @@ val maxMinute: HTMLInputElement?
 
 fun main() {
     reset()
+
+    resetButton?.addEventListener("click", { event: Event? ->
+        reset()
+    })
 }
 
 fun reset(
