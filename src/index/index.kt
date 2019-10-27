@@ -5,7 +5,11 @@ import org.w3c.dom.Node
 import org.w3c.dom.events.Event
 import org.w3c.dom.get
 import kotlin.browser.document
+import kotlin.dom.appendText
+import kotlin.dom.clear
 
+val submitButton: Node?
+    get() = document.getElementsByName("submit")[0]
 val resetButton: Node?
     get() = document.getElementsByName("reset")[0]
 val producer: HTMLInputElement?
@@ -28,6 +32,23 @@ val maxMinute: HTMLInputElement?
 fun main() {
     reset()
 
+    submitButton?.addEventListener("click", { event: Event? ->
+        val dayValue = day?.value ?: "1"
+        val minHourValue = minHour?.value ?: "0"
+        val minMinuteValue = minMinute?.value ?: "0"
+        val maxHourValue = maxHour?.value ?: "0"
+        val maxMinuteValue = maxMinute?.value ?: "0"
+
+        val queries = listOf(
+                "names[]=${listOfNotNull(producer, ritsuko, junjirou).filter { it.checked }.joinToString("&names[]=") { it.name }}",
+                "from=${dateTimeFormat(day = dayValue, hour = minHourValue, minute = minMinuteValue)}%2B09:00",
+                "to=${dateTimeFormat(day = dayValue, hour = maxHourValue, minute = maxMinuteValue)}%2B09:00"
+        )
+
+        document.getElementById("result")?.clear()
+        document.getElementById("result")?.appendText(queries.toString())
+    })
+
     resetButton?.addEventListener("click", { event: Event? ->
         reset()
     })
@@ -49,4 +70,27 @@ fun reset(
     minMinute?.value = minMinuteValue
     maxHour?.value = maxHourValue
     maxMinute?.value = maxMinuteValue
+}
+
+fun dateTimeFormat(
+        year: String = "2019",
+        month: String = "12",
+        day: String = "1",
+        hour: String = "0",
+        minute: String = "0",
+        second: String = "0"
+): String {
+    val y = "000${year}"
+    val mon = "0${month}"
+    val d = "0${day}"
+    val h = "0${hour}"
+    val min = "0${minute}"
+    val s = "0${second}"
+
+    return y.substring(y.length - 4) + "-" +
+            mon.substring(mon.length - 2) + "-" +
+            d.substring(d.length - 2) + "T" +
+            h.substring(h.length - 2) + ":" +
+            min.substring(min.length - 2) + ":" +
+            s.substring(s.length - 2)
 }
