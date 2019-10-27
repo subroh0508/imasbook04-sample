@@ -10,6 +10,27 @@
     <noscript>
       You need to enable JavaScript to run this app.
     </noscript>
-    <div id="root"></div>
+    <div>
+      <p>
+        <input type="checkbox" name="producer">プロデューサーさん
+        <input type="checkbox" name="ritsuko">律子さん
+        <input type="checkbox" name="junjirou">社長
+      </p>
+      <p>
+        <div>
+          <input type="number" name="day" min="1" max="31">日
+        </div>
+        <div>
+          <input type="number" name="minHour" min="0" max="23">時
+          <input type="number" name="minMinute" min="0" max="59">分から
+          <input type="number" name="maxHour" min="0" max="23">時
+          <input type="number" name="maxMinute" min="0" max="59">分まで
+        </div>
+      </p>
+      <p>
+        <button type="button" name="submit">送信！</button>
+        <button type="button" name="reset">リセット！</button>
+      </p>
+    </div>
   </body>
 </html>
