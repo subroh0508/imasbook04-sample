@@ -4,9 +4,14 @@ import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.Node
 import org.w3c.dom.events.Event
 import org.w3c.dom.get
+import org.w3c.fetch.CORS
+import org.w3c.fetch.RequestInit
+import org.w3c.fetch.RequestMode
 import kotlin.browser.document
+import kotlin.browser.window
 import kotlin.dom.appendText
 import kotlin.dom.clear
+import kotlin.js.Promise
 
 val submitButton: Node?
     get() = document.getElementsByName("submit")[0]
@@ -45,14 +50,25 @@ fun main() {
                 "to=${dateTimeFormat(day = dayValue, hour = maxHourValue, minute = maxMinuteValue)}%2B09:00"
         )
 
-        document.getElementById("result")?.clear()
-        document.getElementById("result")?.appendText(queries.toString())
+        request(queries.joinToString("&"))
+                .then {
+                    document.getElementById("result")?.clear()
+                    document.getElementById("result")?.appendText(it.toString())
+                }
     })
 
     resetButton?.addEventListener("click", { event: Event? ->
         reset()
     })
 }
+
+fun request(query: String): Promise<List<CalendarEvent>> =
+        window.fetch(
+                "http://localhost:5000/imasbook04-sample/us-central1/schedules?${query}",
+                RequestInit(mode = RequestMode.CORS)
+        )
+                .then { response -> response.json() }
+                .then { body -> body.unsafeCast<Array<Array<dynamic>>>().flatten().map { CalendarEvent.fromDynamic(it) } }
 
 fun reset(
         checked: Boolean = false,
