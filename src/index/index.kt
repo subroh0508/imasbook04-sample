@@ -22,12 +22,23 @@ val maxMinute: HTMLInputElement?
     get() = document.getElementsByName("maxMinute")[0] as? HTMLInputElement
 
 fun main() {
-    producer?.checked = false
-    ritsuko?.checked = false
-    junjirou?.checked = false
-    day?.value = "1"
-    minHour?.value = "12"
-    minMinute?.value = "0"
-    maxHour?.value = "13"
-    maxMinute?.value = "0"
+    reset()
+}
+
+fun reset(
+        checked: Boolean = false,
+        dayValue: String = "1",
+        minHourValue: String = "12",
+        minMinuteValue: String = "0",
+        maxHourValue: String = "13",
+        maxMinuteValue: String = "0"
+) {
+    producer?.checked = checked
+    ritsuko?.checked = checked
+    junjirou?.checked = checked
+    day?.value = dayValue
+    minHour?.value = minHourValue
+    minMinute?.value = minMinuteValue
+    maxHour?.value = maxHourValue
+    maxMinute?.value = maxMinuteValue
 }
