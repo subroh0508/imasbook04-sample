@@ -39,6 +39,9 @@ function eventList(calendarApi, calendarId, from, to) {
 }
 
 exports.schedules = functions.https.onRequest((req, res) => {
+  res.set('Access-Control-Allow-Origin', '*');
+  res.set('Access-Control-Allow-Methods', 'GET');
+
   if (req.method !== 'GET') {
     res.status(405).send('Method Not Allowed');
     return;
