@@ -15,8 +15,8 @@ import org.w3c.fetch.RequestInit
 import org.w3c.fetch.RequestMode
 import kotlin.browser.document
 import kotlin.browser.window
-import kotlin.dom.appendText
 import kotlin.dom.clear
+import kotlin.js.Date
 import kotlin.js.Promise
 
 val submitButton: Node?
@@ -40,6 +40,8 @@ val maxHour: HTMLInputElement?
 val maxMinute: HTMLInputElement?
     get() = document.getElementsByName("maxMinute")[0] as? HTMLInputElement
 
+const val THIRTY_MIN = 1800000
+
 fun main() {
     reset()
 
@@ -50,17 +52,20 @@ fun main() {
         val maxHourValue = maxHour?.value ?: "0"
         val maxMinuteValue = maxMinute?.value ?: "0"
 
+        val minTime = dateTimeFormat(day = dayValue, hour = minHourValue, minute = minMinuteValue)
+        val maxTime = dateTimeFormat(day = dayValue, hour = maxHourValue, minute = maxMinuteValue)
+
         val queries = listOf(
                 "names[]=${listOfNotNull(producer, ritsuko, junjirou).filter { it.checked }.joinToString("&names[]=") { it.name }}",
-                "from=${dateTimeFormat(day = dayValue, hour = minHourValue, minute = minMinuteValue)}%2B09:00",
-                "to=${dateTimeFormat(day = dayValue, hour = maxHourValue, minute = maxMinuteValue)}%2B09:00"
+                "from=${minTime}%2B09:00",
+                "to=${maxTime}%2B09:00"
         )
 
         request(queries.joinToString("&"))
                 .then {
                     document.getElementById("result")?.clear()
                     document.getElementById("result")?.appendChild(
-                            resultElement(it)
+                            resultElement(Date.parse(minTime).toLong(), Date.parse(maxTime).toLong(), it)
                     )
                 }
     })
@@ -78,7 +83,7 @@ fun request(query: String): Promise<List<CalendarEvent>> =
                 .then { response -> response.json() }
                 .then { body -> body.unsafeCast<Array<Array<dynamic>>>().flatten().map { CalendarEvent.fromDynamic(it) } }
 
-fun resultElement(events: List<CalendarEvent>) = document.create.div {
+fun resultElement(minTime: Long, maxTime: Long, events: List<CalendarEvent>) = document.create.div {
     val producerEvents = events.filter { it.name == "プロデューサーさん" }
     val ritsukoEvents = events.filter { it.name == "律子さん" }
     val junjirouEvents = events.filter { it.name == "社長" }
@@ -94,10 +99,33 @@ fun resultElement(events: List<CalendarEvent>) = document.create.div {
         }
     }
 
+    fun checkFreeTimes(offset: Long, events: List<CalendarEvent>): Boolean =
+            events.filterNot { it.end.getTime().toLong() < offset || (offset + THIRTY_MIN) < it.start.getTime().toLong() }.isEmpty()
+
     p {
         eventSummary("プロデューサーさん", producerEvents)
         eventSummary("律子さん", ritsukoEvents)
         eventSummary("社長", junjirouEvents)
+    }
+
+    val freeTimes: MutableList<Long> = mutableListOf()
+    for (offset in minTime..maxTime step 1800000) {
+        if (checkFreeTimes(offset, events)) {
+            freeTimes.add(offset)
+        }
+    }
+
+    p {
+        if (freeTimes.isNotEmpty()) {
+            div { +"この時間が空いてます！" }
+            ul {
+                freeTimes.forEach { offset ->
+                    li { +"${Date(offset).toLocaleTimeString("ja-JP")} - ${Date(offset + THIRTY_MIN).toLocaleTimeString("ja-JP")}" }
+                }
+            }
+        } else {
+            div { +"空いている時間が見つかりませんでした🥺" }
+        }
     }
 }
 
