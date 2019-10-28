@@ -19,6 +19,18 @@ module.exports = {
     alias: {
       'kotlinx-html-js': 'kotlinx-html',
     },
+    modules: ['build', 'node_modules'],
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        include: path.resolve(__dirname, 'build'),
+        exclude: [
+          /kotlin\.js$/,
+        ],
+      },
+    ],
   },
   plugins: [
     new KotlinWebpackPlugin({
@@ -30,6 +42,7 @@ module.exports = {
       librariesAutoLookup: true,
       verbose: true,
       sourceMap: !isProduction,
+      packagesContents: [require('./package.json')],
     }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'index.template.html'),
