@@ -1,5 +1,11 @@
 package index
 
+import kotlinx.html.div
+import kotlinx.html.dom.create
+import kotlinx.html.js.div
+import kotlinx.html.li
+import kotlinx.html.p
+import kotlinx.html.ul
 import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.Node
 import org.w3c.dom.events.Event
@@ -53,7 +59,9 @@ fun main() {
         request(queries.joinToString("&"))
                 .then {
                     document.getElementById("result")?.clear()
-                    document.getElementById("result")?.appendText(it.toString())
+                    document.getElementById("result")?.appendChild(
+                            resultElement(it)
+                    )
                 }
     })
 
@@ -69,6 +77,29 @@ fun request(query: String): Promise<List<CalendarEvent>> =
         )
                 .then { response -> response.json() }
                 .then { body -> body.unsafeCast<Array<Array<dynamic>>>().flatten().map { CalendarEvent.fromDynamic(it) } }
+
+fun resultElement(events: List<CalendarEvent>) = document.create.div {
+    val producerEvents = events.filter { it.name == "プロデューサーさん" }
+    val ritsukoEvents = events.filter { it.name == "律子さん" }
+    val junjirouEvents = events.filter { it.name == "社長" }
+
+    fun kotlinx.html.FlowContent.eventSummary(name: String, events: List<CalendarEvent>) {
+        div { +"${name}[${events.size}件]" }
+        if (events.isNotEmpty()) {
+            ul {
+                events.forEach {
+                    li { +"${it.summary}: ${it.startTimeString()} - ${it.endTimeString()}" }
+                }
+            }
+        }
+    }
+
+    p {
+        eventSummary("プロデューサーさん", producerEvents)
+        eventSummary("律子さん", ritsukoEvents)
+        eventSummary("社長", junjirouEvents)
+    }
+}
 
 fun reset(
         checked: Boolean = false,

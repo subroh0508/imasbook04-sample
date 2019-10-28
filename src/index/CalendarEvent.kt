@@ -21,4 +21,7 @@ class CalendarEvent(
                 end = Date(Date.parse(obj.end.dateTime as String))
         )
     }
+
+    fun startTimeString() = start.toLocaleTimeString("ja-JP")
+    fun endTimeString() = end.toLocaleTimeString("ja-JP")
 }
