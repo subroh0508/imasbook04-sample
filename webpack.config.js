@@ -5,12 +5,13 @@ const KotlinWebpackPlugin = require('@jetbrains/kotlin-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const BUILD_MODE = process.env.NODE_ENV || 'development';
+const isProduction = BUILD_MODE === 'production';
 
 module.exports = {
   mode: BUILD_MODE,
   entry: path.resolve(__dirname, 'index.js'),
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'public'),
     publicPath: '/',
     filename: '[name].js',
   },
@@ -26,7 +27,7 @@ module.exports = {
     new KotlinWebpackPlugin({
       src: path.resolve(__dirname, 'src'),
       output: 'build',
-      optimize: false,
+      optimize: isProduction,
       moduleName: 'bundlekt', // ビルド時のJSファイル名
       moduleKind: 'commonjs',
       librariesAutoLookup: true,
