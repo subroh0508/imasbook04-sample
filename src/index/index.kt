@@ -77,7 +77,7 @@ fun main() {
 
 fun request(query: String): Promise<List<CalendarEvent>> =
         window.fetch(
-                "http://localhost:5000/imasbook04-sample/us-central1/schedules?${query}",
+                "https://us-central1-imasbook04-sample.cloudfunctions.net/schedules?${query}",
                 RequestInit(mode = RequestMode.CORS)
         )
                 .then { response -> response.json() }
