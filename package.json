@@ -10,10 +10,11 @@
     "kotlinx-html": "^0.6.12",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.9.0"
+    "webpack-dev-server": "^3.9.0",
+    "webpack-merge": "^4.2.2"
   },
   "scripts": {
-    "dev": "yarn run webpack-dev-server --config webpack.config.js",
-    "build": "NODE_ENV=production yarn run webpack"
+    "dev": "yarn run webpack-dev-server --config webpack.dev.js",
+    "build": "NODE_ENV=production yarn run webpack --config webpack.prod.js"
   }
 }

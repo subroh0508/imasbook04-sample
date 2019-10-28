@@ -20,9 +20,6 @@ module.exports = {
       'kotlinx-html-js': 'kotlinx-html',
     },
   },
-  devServer: {
-    contentBase: path.join(__dirname, 'public'),
-  },
   plugins: [
     new KotlinWebpackPlugin({
       src: path.resolve(__dirname, 'src'),
@@ -32,6 +29,7 @@ module.exports = {
       moduleKind: 'commonjs',
       librariesAutoLookup: true,
       verbose: true,
+      sourceMap: !isProduction,
     }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'index.template.html'),
