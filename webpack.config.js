@@ -14,6 +14,11 @@ module.exports = {
     publicPath: '/',
     filename: '[name].js',
   },
+  resolve: {
+    alias: {
+      'kotlinx-html-js': 'kotlinx-html',
+    },
+  },
   devServer: {
     contentBase: path.join(__dirname, 'public'),
   },
