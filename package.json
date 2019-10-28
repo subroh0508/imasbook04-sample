@@ -15,6 +15,7 @@
   },
   "scripts": {
     "dev": "yarn run webpack-dev-server --config webpack.dev.js",
-    "build": "NODE_ENV=production yarn run webpack --config webpack.prod.js"
+    "build": "NODE_ENV=production yarn run webpack --config webpack.prod.js",
+    "deploy": "firebase deploy --only hosting"
   }
 }

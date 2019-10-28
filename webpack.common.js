@@ -16,20 +16,9 @@ module.exports = {
     filename: '[name].js',
   },
   resolve: {
-    alias: {
-      'kotlinx-html-js': 'kotlinx-html',
-    },
-    modules: ['build', 'node_modules'],
-  },
-  module: {
-    rules: [
-      {
-        test: /\.js$/,
-        include: path.resolve(__dirname, 'build'),
-        exclude: [
-          /kotlin\.js$/,
-        ],
-      },
+    modules: [
+      path.resolve(__dirname, 'build'),
+      path.resolve(__dirname, 'node_modules'),
     ],
   },
   plugins: [
