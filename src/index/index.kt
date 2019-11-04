@@ -40,7 +40,7 @@ val maxHour: HTMLInputElement?
 val maxMinute: HTMLInputElement?
     get() = document.getElementsByName("maxMinute")[0] as? HTMLInputElement
 
-const val THIRTY_MIN = 1800000
+const val THIRTY_MIN = 1800000L
 
 fun main() {
     reset()
@@ -109,7 +109,7 @@ fun resultElement(minTime: Long, maxTime: Long, events: List<CalendarEvent>) = d
     }
 
     val freeTimes: MutableList<Long> = mutableListOf()
-    for (offset in minTime..maxTime step 1800000) {
+    for (offset in minTime..(maxTime - 1) step THIRTY_MIN) {
         if (checkFreeTimes(offset, events)) {
             freeTimes.add(offset)
         }
