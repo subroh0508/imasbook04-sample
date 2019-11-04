@@ -4,7 +4,7 @@
  
 ## How to Work
 
- https://imasbook04.otonashi-kotlin.dev/にて公開しています。
+ https://imasbook04.otonashi-kotlin.dev/ にて公開しています。
  
  ローカル環境の場合は、以下のコマンドで動作確認が可能です。
  
